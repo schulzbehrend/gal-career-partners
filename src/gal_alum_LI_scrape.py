@@ -91,10 +91,6 @@ def scrape_contacts(driver, co):
         return 'FAIL', co
     sleep(2)
 
-def main():
-
-
-
 
 if __name__ == '__main__':
     df = pd.read_csv('../data/glassdoor_scrape_1.csv')
