@@ -82,7 +82,7 @@ def scrape_contacts(driver, co):
     
     sleep(5)
     driver.find_element_by_xpath(srch_x_path).send_keys(co + Keys.RETURN)
-    sleep(2)
+    sleep(5)
     try:
         driver.find_element_by_xpath(co_x_path).click()
         driver.find_element_by_xpath(srch_x_path).clear()
