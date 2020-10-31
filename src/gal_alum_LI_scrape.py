@@ -85,7 +85,8 @@ def scrape_contacts(driver, co):
     wait = WebDriverWait(driver, 10)
     # XPaths
     srch_x_path = '//*[@id="ember16"]/input'
-    ppl_search_xpath = '//*[@id="people-search-keywords"]'
+    emp_srch_id = 'people-search-keywords'
+    # ppl_search_xpath = '//*[@id="people-search-keywords"]'
     gal_alum = 'galvanize'
     # tech_rec = 'technical recruiter'
     
@@ -113,8 +114,8 @@ def scrape_contacts(driver, co):
         mongo.insert_one({co: 'People Link 404'})
         return None
         
-    wait.until(EC.element_to_be_clickable((By.XPATH, ppl_search_xpath))) 
-    driver.find_element_by_xpath(ppl_search_xpath).send_keys(gal_alum + Keys.RETURN)
+    wait.until(EC.element_to_be_clickable((By.ID, emp_srch_id))) 
+    driver.find_element_by_id(emp_srch_id).send_keys(gal_alum + Keys.RETURN)
     
     wait.until(EC.element_to_be_clickable((By.TAG_NAME, 'ul'))) 
     scroll_to_end(driver, 3)
@@ -185,6 +186,6 @@ if __name__ == '__main__':
     mongo.connect_mongo()
     mongo.connect_coll('gal_part_proj', 'gal_alum')
 
-    cos[43:].apply(lambda x: scrape_contacts(driver, x))
+    cos[69:].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
