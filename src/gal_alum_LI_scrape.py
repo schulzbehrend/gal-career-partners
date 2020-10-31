@@ -1,12 +1,17 @@
 from collections import defaultdict
 import pandas as pd
 from time import sleep
-import pickle
 
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 import chromedriver_binary
 from bs4 import BeautifulSoup
+
+import mongo
 
 def get_login():
     '''
@@ -50,9 +55,10 @@ def li_login():
     driver = webdriver.Chrome()
     driver.get('https://www.linkedin.com/')
     # log in
+    sleep(2)
     driver.find_element_by_id('session_key').send_keys(email)
-    driver.find_element_by_id('session_password').send_keys(pw)
-    driver.find_element_by_id('session_password').send_keys(Keys.RETURN)
+    sleep(1)
+    driver.find_element_by_id('session_password').send_keys(pw+Keys.RETURN)
 
     return driver
 
@@ -73,24 +79,90 @@ def scrape_contacts(driver, co):
     d: (dict)
         Return dictionary for mongo DB insert.
     '''
+    global_srch = 'https://www.linkedin.com/search/results/companies/?keywords=&origin=SWITCH_SEARCH_VERTICAL'
+    driver.get(global_srch)
+    wait = WebDriverWait(driver, 10)
     # XPaths
-    # Click first item when search company
     srch_x_path = '//*[@id="ember16"]/input'
-    co_x_path = '/html/body/div[7]/div[3]/div/div[2]/div/div/div/div[1]/div/div/div/div[2]/div[1]/div[1]/span/div/span/span/a'
-    ppl_x_path = '/html/body/div[7]/div[3]/div/div[3]/div[2]/div[1]/div/div/nav/ul/li[5]/a'
+    ppl_search_xpath = '//*[@id="people-search-keywords"]'
+    gal_alum = 'galvanize'
+    # tech_rec = 'technical recruiter'
     
     
-    sleep(5)
     driver.find_element_by_xpath(srch_x_path).send_keys(co + Keys.RETURN)
-    sleep(5)
+    sleep(3)
+    r = driver.page_source
+    soup = BeautifulSoup(r, 'html.parser')
+    first_hit = soup.find_all('a')[16]['id']
+    
     try:
-        driver.find_element_by_xpath(co_x_path).click()
-        driver.find_element_by_xpath(srch_x_path).clear()
-        return 'PASS', co
+        up = ActionChains(driver)
+        up.send_keys(Keys.HOME)
+        up.perform()
+        sleep(3)
+        driver.find_element_by_id(first_hit).click()
     except:
         driver.find_element_by_xpath(srch_x_path).clear()
-        return 'FAIL', co
-    sleep(2)
+        mongo.insert_one({co: 'Company Page 404'})
+    
+    wait.until(EC.element_to_be_clickable((By.LINK_TEXT, 'People')))
+    driver.find_element_by_link_text('People').click()
+    wait.until(EC.element_to_be_clickable((By.XPATH, ppl_search_xpath))) 
+    driver.find_element_by_xpath(ppl_search_xpath).send_keys(gal_alum + Keys.RETURN)
+    
+    wait.until(EC.element_to_be_clickable((By.TAG_NAME, 'ul'))) 
+    scroll_to_end(driver, 3)
+    r = driver.page_source
+    soup = BeautifulSoup(r, 'html.parser')
+    results = soup.find('ul', 'org-people-profiles-module__profile-list')
+    
+    if results is None:
+        mongo.insert_one({co: 'No results'})
+        return None
+    
+    d = construct_record(results, co)
+    mongo.insert_one(d)
+
+def scroll_to_end(driver, timeout):
+    scroll_pause_time = timeout
+
+    # Get scroll height
+    last_height = driver.execute_script("return document.body.scrollHeight")
+
+    while True:
+        # Scroll down to bottom
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        # Wait to load page
+        sleep(scroll_pause_time)
+
+        # Calculate new scroll height and compare with last scroll height
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            # If heights are the same it will exit the function
+            break
+        last_height = new_height
+
+def construct_record(results, co):
+    contact_elements = results.find_all('li', 'org-people-profiles-module__profile-item')
+    
+    d = defaultdict(dict)
+    
+    for contact in contact_elements:
+        name = contact.find('div', 'org-people-profile-card__profile-title t-black lt-line-clamp lt-line-clamp--single-line ember-view')
+        if name is None:
+            continue
+        name = name.text.rstrip().replace(' ', '', 2)
+        name = name.replace('.', '')
+        link = 'https://www.linkedin.com' + contact.a['href']
+
+        if co not in d:
+            d[co]
+
+        if name not in co:
+            d[co][name] = link
+    
+    return d
 
 
 if __name__ == '__main__':
@@ -100,5 +172,8 @@ if __name__ == '__main__':
     cos = pd.Series(df.name[~edu_flag].unique())
 
     driver = li_login()
-    cos_scrape = cos.apply(lambda x: scrape_contacts(driver, x))
-    pickle.dump(cos_scrape, open( "save.pkl", "wb" ))
+
+    mongo.connect_mongo()
+    mongo.connect_coll('gal_part_proj', 'gal_alum')
+
+    cos.apply(lambda x: scrape_contacts(driver, x))
