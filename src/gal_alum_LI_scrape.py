@@ -79,6 +79,7 @@ def scrape_contacts(driver, co):
     d: (dict)
         Return dictionary for mongo DB insert.
     '''
+    co = co.replace('.', '')
     global_srch = 'https://www.linkedin.com/search/results/companies/?keywords=&origin=SWITCH_SEARCH_VERTICAL'
     driver.get(global_srch)
     wait = WebDriverWait(driver, 10)
@@ -184,6 +185,6 @@ if __name__ == '__main__':
     mongo.connect_mongo()
     mongo.connect_coll('gal_part_proj', 'gal_alum')
 
-    cos[32:].apply(lambda x: scrape_contacts(driver, x))
+    cos[43:].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
