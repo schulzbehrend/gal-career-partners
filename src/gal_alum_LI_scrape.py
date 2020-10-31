@@ -184,6 +184,6 @@ if __name__ == '__main__':
     mongo.connect_mongo()
     mongo.connect_coll('gal_part_proj', 'gal_alum')
 
-    cos[26:].apply(lambda x: scrape_contacts(driver, x))
+    cos[32:].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
