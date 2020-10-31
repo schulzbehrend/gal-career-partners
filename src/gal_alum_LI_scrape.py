@@ -38,7 +38,7 @@ def li_login():
     '''
     Login into LinkedIn and webdriver session for more web manipulation.
     Sets up flow to search in LinkedIn head search bar.
-
+dd
     Parameters
     ----------
     None:
@@ -95,18 +95,23 @@ def scrape_contacts(driver, co):
     soup = BeautifulSoup(r, 'html.parser')
     first_hit = soup.find_all('a')[16]['id']
     
-    try:
-        up = ActionChains(driver)
-        up.send_keys(Keys.HOME)
-        up.perform()
-        sleep(3)
-        driver.find_element_by_id(first_hit).click()
-    except:
-        driver.find_element_by_xpath(srch_x_path).clear()
+    if first_hit == 'globalfooter-accessibility':
         mongo.insert_one({co: 'Company Page 404'})
+        return None
     
-    wait.until(EC.element_to_be_clickable((By.LINK_TEXT, 'People')))
-    driver.find_element_by_link_text('People').click()
+    up = ActionChains(driver)
+    up.send_keys(Keys.HOME)
+    up.perform()
+    sleep(3)
+    driver.find_element_by_id(first_hit).click()
+    
+    try:
+        wait.until(EC.element_to_be_clickable((By.LINK_TEXT, 'People')))
+        driver.find_element_by_link_text('People').click()
+    except:
+        mongo.insert_one({co: 'People Link 404'})
+        return None
+        
     wait.until(EC.element_to_be_clickable((By.XPATH, ppl_search_xpath))) 
     driver.find_element_by_xpath(ppl_search_xpath).send_keys(gal_alum + Keys.RETURN)
     
@@ -114,6 +119,7 @@ def scrape_contacts(driver, co):
     scroll_to_end(driver, 3)
     r = driver.page_source
     soup = BeautifulSoup(r, 'html.parser')
+    # TODO insert mongo raw scrape
     results = soup.find('ul', 'org-people-profiles-module__profile-list')
     
     if results is None:
@@ -122,6 +128,7 @@ def scrape_contacts(driver, co):
     
     d = construct_record(results, co)
     mongo.insert_one(d)
+    return None
 
 def scroll_to_end(driver, timeout):
     scroll_pause_time = timeout
@@ -168,12 +175,15 @@ def construct_record(results, co):
 if __name__ == '__main__':
     df = pd.read_csv('../data/glassdoor_scrape_1.csv')
     df.dropna(inplace=True)
-    edu_flag = df['industry'].apply(lambda x: True if 'College' in x else False)
-    cos = pd.Series(df.name[~edu_flag].unique())
+    # edu_flag = df['industry'].apply(lambda x: True if 'College' in x else False)
+    cos = df['name']
+    # pd.Series(df.name[~edu_flag].unique())
 
     driver = li_login()
 
     mongo.connect_mongo()
     mongo.connect_coll('gal_part_proj', 'gal_alum')
 
-    cos.apply(lambda x: scrape_contacts(driver, x))
+    cos[26:].apply(lambda x: scrape_contacts(driver, x))
+
+    mongo.close_mongo()
