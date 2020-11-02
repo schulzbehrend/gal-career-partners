@@ -11,3 +11,6 @@ def connect_coll(db_name, coll_name):
 
 def insert_one(d):
     coll.insert(d)
+
+def close_mongo():
+    client.close()
