@@ -220,3 +220,4 @@ if __name__ == '__main__':
     cos.apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
+    driver.close()
