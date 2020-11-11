@@ -105,6 +105,7 @@ def scrape_contacts(driver, co):
     up.send_keys(Keys.HOME)
     up.perform()
     sleep(3)
+    wait.until(EC.element_to_be_clickable((By.ID, first_hit)))
     driver.find_element_by_id(first_hit).click()
     
     try:
@@ -187,7 +188,7 @@ if __name__ == '__main__':
     'Aurigo Software Technologies', 'Avanade', 'Dun & Bradstreet', 'BAE Systems USA', 'Balyasny Asset Management', 'Kasasa', 
     'BearingPoint', 'Bell', 'Bigcommerce', 'BlackLocus', 'Blue Cross Blue Shield', 'Boeing', 'Booz Allen Hamilton', 'Boundless', 
     'BP', 'BuildASign.com', 'Calculated Hire', 'Carvana', 'Centerpoint Energy', 'Cerebri AI', 'CGI', 'Cigna', 'City of Austin', 
-    'ClearDATA', 'Client Network Services', 'LMI', 'Cloud Big Data Technologies Group', 'Cloudera', 'Cocolevio', 
+    'ClearDATA', 'Client Network Services', 'LMI', 'Cloud BigData Technologies Group', 'Cloudera', 'Cocolevio', 
     'Cognizant Technology Solutions', 'Compeat', 'ConnectTel', 'ConsultAdd', 'Cratejoy', 'CreditCards.com', 'CreditShop', 
     'Crossover for Work', 'Cybersource', 'Deverus', 'Digital Turbine', 'Dow', 'Doximity', 'Dura Medic', 
     'Dynamic Computing Services', 'E2OPEN', 'eMDs', 'Emerson', 'eMids Technologies', 'Emtec', 'EPC Group.net', 'Equinor', 
@@ -217,7 +218,7 @@ if __name__ == '__main__':
     mongo.connect_mongo()
     mongo.connect_coll('gal_part_proj', 'gal_alum')
 
-    cos.apply(lambda x: scrape_contacts(driver, x))
+    cos[46:].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
     driver.close()
