@@ -194,7 +194,7 @@ if __name__ == '__main__':
     'Dynamic Computing Services', 'E2OPEN', 'eMDs', 'Emerson', 'eMids Technologies', 'Emtec', 'EPC Group.net', 'Equinor', 
     'Equity Methods', 'eSolutions (UAE)', 'Ethos Life', 'Everfest', 'eVestment', 'EY', 'FMTC', 'Ford Motor Company', 'Gartner', 
     'GE Aviation', 'GitHub', 'GLG', 'Global Resources', 'Goldman Sachs', 'Hayes Software Systems', 'Hypergiant', 'Infogain', 
-    'InstaPay', 'IntegraFEC', 'IRS', 'Itransition', 'JASK', 'Josh Technology Group', 'Jovio', 'KAnand', 'Kasasa', 'KNIME', 
+    'InstaPay', 'Integra FEC', 'IRS', 'Itransition', 'JASK', 'Josh Technology Group', 'Jovio', 'KAnand', 'Kasasa', 'KNIME', 
     'KUKA', 'KUNGFU.AI', 'Latitude 36', 'Lattice Engines', 'Marsh', 'McKinsey & Company', 'Merck', 'Meridian Technology Group', 
     'MMC Systems', 'Morningstar', 'Mr. Cooper', 'Myriad Genetics', 'Netspend', 'NFP', 'NHRG', 'NIC', 'Nimbus Data', 'Nutrabolt', 
     'ONE Gas', 'Optum', 'Outdoorsy', 'Palisades Holdings', 'PARAM HEALTHCARE & IT SERVICES, INC', 'Parker & Lynch', 
@@ -218,7 +218,7 @@ if __name__ == '__main__':
     mongo.connect_mongo()
     mongo.connect_coll('gal_part_proj', 'gal_alum')
 
-    cos[46:].apply(lambda x: scrape_contacts(driver, x))
+    cos[198:].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
     driver.close()
