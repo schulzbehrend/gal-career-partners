@@ -84,12 +84,11 @@ def scrape_contacts(driver, co):
     global_srch = 'https://www.linkedin.com/search/results/companies/?keywords=&origin=SWITCH_SEARCH_VERTICAL'
     driver.get(global_srch)
     wait = WebDriverWait(driver, 10)
-    # XPaths
+    # Element IDs and XPATHs
     srch_x_path = '//*[@id="ember16"]/input'
     emp_srch_id = 'people-search-keywords'
-    # ppl_search_xpath = '//*[@id="people-search-keywords"]'
-    gal_alum = 'galvanize'
-    # tech_rec = 'technical recruiter'
+    tech_rec = 'technical recruiter'
+    area = 'Austin, TX Area'
     
     
     driver.find_element_by_xpath(srch_x_path).send_keys(co + Keys.RETURN)
@@ -117,7 +116,9 @@ def scrape_contacts(driver, co):
         return None
         
     wait.until(EC.element_to_be_clickable((By.ID, emp_srch_id))) 
-    driver.find_element_by_id(emp_srch_id).send_keys(gal_alum + Keys.RETURN)
+    driver.find_element_by_id(emp_srch_id).send_keys(tech_rec + Keys.RETURN)
+    sleep(5)
+    driver.find_element_by_id(emp_srch_id).send_keys(area + Keys.RETURN)
     
     wait.until(EC.element_to_be_clickable((By.TAG_NAME, 'ul'))) 
     scroll_to_end(driver, 3)
@@ -135,6 +136,7 @@ def scrape_contacts(driver, co):
     return None
 
 def scroll_to_end(driver, timeout):
+    # TODO docstring
     scroll_pause_time = timeout
 
     # Get scroll height
@@ -155,6 +157,7 @@ def scroll_to_end(driver, timeout):
         last_height = new_height
 
 def construct_record(results, co):
+    # TODO docstring
     contact_elements = results.find_all('li', 'org-people-profiles-module__profile-item')
     
     d = defaultdict(dict)
@@ -182,9 +185,11 @@ if __name__ == '__main__':
     driver = li_login()
 
     mongo.connect_mongo()
-    mongo.connect_coll('gal_part_proj', 'gal_alum')
+    mongo.connect_coll('gal_part_proj', 'ATX_tech_rec')
 
-    cos[198:].apply(lambda x: scrape_contacts(driver, x))
+    # testing segments of company list
+    #   First: first 10, 0:9
+    cos[:9].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
     driver.close()
