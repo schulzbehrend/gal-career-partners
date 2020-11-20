@@ -7,7 +7,7 @@ Script for pulling LinkedIn contact data (Name & URl) from a specifced companies
 1. open li, login with creds
 2. click global search bar
 3. input co name
-4. like people
+4. click people
 5. input search keyword
     Gal alum: `'galvanize'`
     Tech Recruiter: `'technical recruiter'` & `'Austin, TX Area'`
