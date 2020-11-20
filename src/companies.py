@@ -1,7 +1,7 @@
 cos_list = ['9Gauge Partners', 'Abbott', 'Aceable', 'AdbaKx', 'Addison Group', 'Aditi Consulting', 'Adroit Associates Inc', 
     'Advanced Solutions International', 'Affinipay', 'AgileAssets', 'AbbVie', 'Greystar', 'Alpha Nodus', 
     'American Campus Communities', 'Amplify', 'Applied Research Laboratories', 'ARM', 'Aspen Heights', 'Atrium', 'Aunt Bertha', 
-    'Aurigo Software Technologies', 'Avanade', 'Dun & Bradstreet', 'BAE Systems USA', 'Balyasny Asset Management', 'Kasasa', 
+    'Aurigo Software Technologies', 'Avanade', 'Dun & Bradstreet', 'BAE Systems', 'Balyasny Asset Management', 'Kasasa', 
     'BearingPoint', 'Bell', 'Bigcommerce', 'BlackLocus', 'Blue Cross Blue Shield', 'Boeing', 'Booz Allen Hamilton', 'Boundless', 
     'BP', 'BuildASign.com', 'Calculated Hire', 'Carvana', 'Centerpoint Energy', 'Cerebri AI', 'CGI', 'Cigna', 'City of Austin', 
     'ClearDATA', 'Client Network Services', 'LMI', 'Cloud BigData Technologies Group', 'Cloudera', 'Cocolevio', 
