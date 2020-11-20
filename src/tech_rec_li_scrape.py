@@ -38,8 +38,8 @@ def get_login():
 def li_login():
     '''
     Login into LinkedIn and webdriver session for more web manipulation.
-    Sets up flow to search in LinkedIn head search bar.
-dd
+    Keys generated from get_login() function.
+
     Parameters
     ----------
     None:
@@ -73,12 +73,12 @@ def scrape_contacts(driver, co):
     driver: (selenium.webdriver.chrome.webdriver.WebDriver)
         Webdriver session for web manipulation.
     co: (str)
-        Company string to search in head search bar.
+        Company string to search in global search bar.
 
     Returns
     ----------
     d: (dict)
-        Return dictionary for mongo DB insert.
+        Return dictionary ({co: {name: link}}) for mongo DB insert.
     '''
     co = co.replace('.', '')
     global_srch = 'https://www.linkedin.com/search/results/companies/?keywords=&origin=SWITCH_SEARCH_VERTICAL'
@@ -136,7 +136,20 @@ def scrape_contacts(driver, co):
     return None
 
 def scroll_to_end(driver, timeout):
-    # TODO docstring
+    '''
+    Scroll to end of page.
+
+    Parameters
+    ----------
+    driver: (selenium.webdriver.chrome.webdriver.WebDriver)
+        Webdriver session for web manipulation.
+    co: (str)
+        Company string to search in global search bar.
+
+    Returns
+    ----------
+    None: (NoneType)
+    '''
     scroll_pause_time = timeout
 
     # Get scroll height
@@ -155,9 +168,24 @@ def scroll_to_end(driver, timeout):
             # If heights are the same it will exit the function
             break
         last_height = new_height
+    return None
 
 def construct_record(results, co):
-    # TODO docstring
+    '''
+    Construct dictionary from web scrape.
+
+    Parameters
+    ----------
+    results: (bs4.element.Tag)
+        BeautifulSoup element from page scrape.
+    co: (str)
+        Company string to search in global search bar.
+
+    Returns
+    ----------
+    d: (dict)
+        Returns a dictionary for mongo insert.
+    '''
     contact_elements = results.find_all('li', 'org-people-profiles-module__profile-item')
     
     d = defaultdict(dict)
@@ -180,17 +208,18 @@ def construct_record(results, co):
 
 
 if __name__ == '__main__':
+    '''
+    Scrapes LI People Company data and saved to mongoDB.
+    '''
     cos = pd.Series(cos_list)
-
     driver = li_login()
-
     mongo.connect_mongo()
     mongo.connect_coll('gal_part_proj', 'ATX_tech_rec')
 
     # testing segments of company list
     #   First: first 10, 0:9
     #   Second: 7:10; err on step 6
-    cos[10:].apply(lambda x: scrape_contacts(driver, x))
+    cos[7:10].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
     driver.close()
