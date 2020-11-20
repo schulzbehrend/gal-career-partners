@@ -143,8 +143,8 @@ def scroll_to_end(driver, timeout):
     ----------
     driver: (selenium.webdriver.chrome.webdriver.WebDriver)
         Webdriver session for web manipulation.
-    co: (str)
-        Company string to search in global search bar.
+    timoeut: (int)
+        Number of seconds (s) to sleep before next action.
 
     Returns
     ----------
@@ -219,7 +219,8 @@ if __name__ == '__main__':
     # testing segments of company list
     #   First: first 10, 0:9
     #   Second: 7:10; err on step 6
-    cos[7:10].apply(lambda x: scrape_contacts(driver, x))
+    #   Third: 10:, err on BAE Systems USA --> 'BAE Systems'
+    cos[23:].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
     driver.close()
