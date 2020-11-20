@@ -220,7 +220,9 @@ if __name__ == '__main__':
     #   First: first 10, 0:9
     #   Second: 7:10; err on step 6
     #   Third: 10:, err on BAE Systems USA --> 'BAE Systems'
-    cos[23:].apply(lambda x: scrape_contacts(driver, x))
+    #   Fourth: 23:, err on Centerpoint Energy, error with Centerpoint Energy search
+    #   Fifth:  38:, 
+    cos[38:].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
     driver.close()
