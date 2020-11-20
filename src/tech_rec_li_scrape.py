@@ -189,7 +189,8 @@ if __name__ == '__main__':
 
     # testing segments of company list
     #   First: first 10, 0:9
-    cos[7:10].apply(lambda x: scrape_contacts(driver, x))
+    #   Second: 7:10; err on step 6
+    cos[10:].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
     driver.close()
