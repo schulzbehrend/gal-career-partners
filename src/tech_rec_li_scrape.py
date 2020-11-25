@@ -221,8 +221,8 @@ if __name__ == '__main__':
     #   Second: 7:10; err on step 6
     #   Third: 10:, err on BAE Systems USA --> 'BAE Systems'
     #   Fourth: 23:, err on Centerpoint Energy, error with Centerpoint Energy search
-    #   Fifth:  38:, 
-    cos[38:].apply(lambda x: scrape_contacts(driver, x))
+    #   Fifth:  38:, stopped on ConnectTel
+    cos[51:].apply(lambda x: scrape_contacts(driver, x))
 
     mongo.close_mongo()
     driver.close()
