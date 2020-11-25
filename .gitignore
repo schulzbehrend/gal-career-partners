@@ -132,6 +132,7 @@ dmypy.json
 .DS_Store
 /data/LI_login.txt
 /data/*.csv
+/data/alumi
 /src/*.code-workspace
 /src/*.ipynb
 /src/.vscode
