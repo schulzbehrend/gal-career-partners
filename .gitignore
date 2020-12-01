@@ -135,4 +135,5 @@ dmypy.json
 /data/alumni
 /src/*.code-workspace
 /src/*.ipynb
+!/src/project_notes.ipynb
 /src/.vscode
