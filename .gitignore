@@ -133,6 +133,7 @@ dmypy.json
 /data/LI_login.txt
 /data/*.csv
 /data/alumni
+/data/tech_rec
 /src/*.code-workspace
 /src/*.ipynb
 !/src/project_notes.ipynb
