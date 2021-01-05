@@ -1,5 +1,6 @@
 from collections import defaultdict
 import pandas as pd
+import numpy as np
 from time import sleep
 import glob
 import os
@@ -83,15 +84,16 @@ def scrape_location(driver, url, frame=None):
     '''
     sleep(5)
     # frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', mode='a', index=False)
-    sleep(3)
+    # sleep(3)
     driver.get(url)
     r = driver.page_source
     soup = BeautifulSoup(r, 'html.parser')
     flex_card = soup.find('div', 'flex-1 mr5')
     location = flex_card.find('li', 't-16 t-black t-normal inline-block')
     location = location.text.lstrip().rstrip()
+    # frame['location'].append(location, ignore_index=True)
     sleep(3)
-    # frame.to_csv('../data/techrecruiters_with_location.csv', mode=)
+    # frame.to_csv('../data/techrecruiters_with_location.csv', mode='a')
 
     return location
 
@@ -108,8 +110,9 @@ def main():
     ----------
     None:
     '''
-    path = '../data/tech_rec' # use your path
+    path = '../data/tech_rec'
     all_files = glob.glob(path + "/*.csv")
+    csv_name = '../data/tech_rec/_techrecruiters_with_location.csv'
     lst = []
     
     for filename in all_files:
@@ -122,18 +125,25 @@ def main():
     
     frame = pd.concat(lst, axis=0, ignore_index=True)
     frame['location'] = ''
+    df = pd.DataFrame(columns=frame.columns)
 
-    if not os.path.exists('../data/tech_rec/_techrecruiters_with_location.csv'):
-        open('../data/tech_rec/_techrecruiters_with_location.csv')
-        # frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', index=False)
+    if not os.path.exists(csv_name):
+        df.to_csv(csv_name, index=False)
 
-    n = 10 # number or rows
-    df_seg = [frame[i:i+1] for i in ragne(1, frame.shape[0], n)]
+    #     #     pass
+    #     frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', index=False)
+
+    # n = 10 # number or rows
+    # df_seg = [frame[i:i+1] for i in range(1, frame.shape[0], n)]
     driver = login()
 
-    for df in df_seg[:1]:
-        df['location'] = df['url'].apply(lambda url: scrape_location(driver, url))
-        frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', mode='a', index=False)
+    # df = pd.DataFrame(np.zeros((frame.shape[0], frame.shape[1])))
+
+    for _, row in frame.iterrows():
+        location = scrape_location(driver, row['url'])
+        row['location'] = location
+        df = df.append(row)
+        df.to_csv(csv_name, mode='a', index=False, header=False)
     
     driver.close()
 
