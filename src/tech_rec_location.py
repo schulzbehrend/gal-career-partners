@@ -139,11 +139,11 @@ def main():
 
     # df = pd.DataFrame(np.zeros((frame.shape[0], frame.shape[1])))
 
-    for _, row in frame.iterrows():
+    for idx, row in frame[:3].iterrows():
         location = scrape_location(driver, row['url'])
         row['location'] = location
         df = df.append(row)
-        df.to_csv(csv_name, mode='a', index=False, header=False)
+        df[idx:].to_csv(csv_name, mode='a', index=False, header=False)
     
     driver.close()
 
