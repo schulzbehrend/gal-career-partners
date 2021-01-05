@@ -2,6 +2,7 @@ from collections import defaultdict
 import pandas as pd
 from time import sleep
 import glob
+import os
 
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -64,7 +65,7 @@ def login():
 
     return driver
 
-def scrape_location(driver, url):
+def scrape_location(driver, url, frame):
     '''
     Go to LinkedIn user's URL and scrape work location.
     
@@ -80,6 +81,8 @@ def scrape_location(driver, url):
     location: (str)
         Return string of LinkedIn user's work location.
     '''
+    sleep(5)
+    frame.to_csv('../data/techrecruiters_with_location.csv', mode='a')
     sleep(3)
     driver.get(url)
     r = driver.page_source
@@ -88,6 +91,7 @@ def scrape_location(driver, url):
     location = flex_card.find('li', 't-16 t-black t-normal inline-block')
     location = location.text.lstrip().rstrip()
     sleep(3)
+    # frame.to_csv('../data/techrecruiters_with_location.csv', mode=)
 
     return location
 
@@ -107,7 +111,7 @@ def main():
     path = '../data/tech_rec' # use your path
     all_files = glob.glob(path + "/*.csv")
     lst = []
-
+    
     for filename in all_files:
         df = pd.read_csv(filename, index_col=None, header=0, names=['recruiter', 'url'])
         co_name = filename
@@ -117,12 +121,13 @@ def main():
         lst.append(df)
     
     frame = pd.concat(lst, axis=0, ignore_index=True)
+    frame['location'] = ''
 
+    if not os.path.exists('../data/tech_rec/_techrecruiters_with_location.csv'):
+        frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', index=False)
+    
     driver = login()
-    location = frame['url'].apply(lambda x: scrape_location(driver, x))
-    frame['location'] = location
-    frame.to_csv('../data/techrecruiters_with_location.csv')
-
+    frame['url'][0:10].apply(lambda url: scrape_location(driver, url, frame))
     driver.close()
 
 if __name__ == '__main__':
