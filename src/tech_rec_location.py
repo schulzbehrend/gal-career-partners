@@ -80,20 +80,24 @@ def scrape_location(driver, url):
 def main():
     path = '../data/tech_rec' # use your path
     all_files = glob.glob(path + "/*.csv")
-    li = []
+    lst = []
+
     for filename in all_files:
         df = pd.read_csv(filename, index_col=None, header=0, names=['recruiter', 'url'])
         co_name = filename
         co_name = co_name.split('/')[-1]
         co_name = co_name[:-4]
         df['co_name'] = co_name
-    li.append(df)
-    frame = pd.concat(li, axis=0, ignore_index=True)
+        lst.append(df)
+    
+    frame = pd.concat(lst, axis=0, ignore_index=True)
 
     driver = login()
     location = frame['url'].apply(lambda x: scrape_location(driver, x))
     frame['location'] = location
-    frame.to_csv('../data/tech_rec/techrecruiters_with_location.csv')
+    frame.to_csv('../data/techrecruiters_with_location.csv')
+
+    driver.close()
 
 if __name__ == '__main__':
     main()
