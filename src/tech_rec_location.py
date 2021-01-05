@@ -65,7 +65,21 @@ def login():
     return driver
 
 def scrape_location(driver, url):
-    '''scrape tech recruiters location info'''
+    '''
+    Go to LinkedIn user's URL and scrape work location.
+    
+    Parameters
+    ----------
+    driver: (selenium.webdriver.chrome.webdriver.WebDriver)
+        Selenium Chrome Webdriver for site interaction.
+    url: (str)
+        LinkedIn user's URL.
+
+    Returns
+    ----------
+    location: (str)
+        Return string of LinkedIn user's work location.
+    '''
     sleep(3)
     driver.get(url)
     r = driver.page_source
@@ -78,6 +92,18 @@ def scrape_location(driver, url):
     return location
 
 def main():
+    '''
+    Open local CSVs into one DataFrame, scrape LinkedIn users work location and 
+    append to original Dataframe. Save new DataFrame to local CSV.
+
+    Parameters
+    ----------
+    None:
+
+    Returns
+    ----------
+    None:
+    '''
     path = '../data/tech_rec' # use your path
     all_files = glob.glob(path + "/*.csv")
     lst = []
