@@ -130,16 +130,9 @@ def main():
     if not os.path.exists(csv_name):
         df.to_csv(csv_name, index=False)
 
-    #     #     pass
-    #     frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', index=False)
-
-    # n = 10 # number or rows
-    # df_seg = [frame[i:i+1] for i in range(1, frame.shape[0], n)]
     driver = login()
 
-    # df = pd.DataFrame(np.zeros((frame.shape[0], frame.shape[1])))
-
-    for idx, row in frame[:3].iterrows():
+    for idx, row in frame.iterrows():
         location = scrape_location(driver, row['url'])
         row['location'] = location
         df = df.append(row)
