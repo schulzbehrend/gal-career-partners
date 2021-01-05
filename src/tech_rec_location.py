@@ -65,7 +65,7 @@ def login():
 
     return driver
 
-def scrape_location(driver, url, frame):
+def scrape_location(driver, url, frame=None):
     '''
     Go to LinkedIn user's URL and scrape work location.
     
@@ -82,7 +82,7 @@ def scrape_location(driver, url, frame):
         Return string of LinkedIn user's work location.
     '''
     sleep(5)
-    frame.to_csv('../data/techrecruiters_with_location.csv', mode='a')
+    # frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', mode='a', index=False)
     sleep(3)
     driver.get(url)
     r = driver.page_source
@@ -124,10 +124,17 @@ def main():
     frame['location'] = ''
 
     if not os.path.exists('../data/tech_rec/_techrecruiters_with_location.csv'):
-        frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', index=False)
-    
+        open('../data/tech_rec/_techrecruiters_with_location.csv')
+        # frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', index=False)
+
+    n = 10 # number or rows
+    df_seg = [frame[i:i+1] for i in ragne(1, frame.shape[0], n)]
     driver = login()
-    frame['url'][0:10].apply(lambda url: scrape_location(driver, url, frame))
+
+    for df in df_seg[:1]:
+        df['location'] = df['url'].apply(lambda url: scrape_location(driver, url))
+        frame.to_csv('../data/tech_rec/_techrecruiters_with_location.csv', mode='a', index=False)
+    
     driver.close()
 
 if __name__ == '__main__':
