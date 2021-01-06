@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 
 import mongo
 from companies import cos_list
-import scroll
+# import scroll
 
 def get_login():
     '''
@@ -120,7 +120,7 @@ def main():
     all_files = glob.glob(path + "/*.csv")
     csv_name = '../data/tech_rec/_techrecruiters_with_location.csv'
     lst = []
-    scroll.main()
+    # scroll.main()
     
     #TODO: functionize
     for filename in all_files:
