@@ -70,7 +70,8 @@ def inf_scroll(driver, timeout):
     while True:
         # Scroll 100 pixels?
         sleep(scroll_pause_time)
-        driver.execute_script("window.scrollTo(0, 100);")
+        # driver.execute_script("window.scrollTo(0, 100);")
+        driver.execute_script("window.scrollTo(0, window.scrollY + 3000)")
     return None
 
 def main():
