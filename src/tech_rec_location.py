@@ -88,10 +88,11 @@ def scrape_location(driver, url, frame=None):
     driver.get(url)
     r = driver.page_source
     soup = BeautifulSoup(r, 'html.parser')
-    #TODO: try/except for scraping flex_card. If the item is not present on the browers
-    # --> the users profile does not exist
     flex_card = soup.find('div', 'flex-1 mr5')
-    location = flex_card.find('li', 't-16 t-black t-normal inline-block')
+    try:
+        location = flex_card.find('li', 't-16 t-black t-normal inline-block')
+    except:
+        return '404'
     location = location.text.lstrip().rstrip()
     # frame['location'].append(location, ignore_index=True)
     sleep(3)
@@ -134,7 +135,7 @@ def main():
 
     driver = login()
 
-    for idx, row in frame[170:].iterrows():
+    for idx, row in frame[280:].iterrows():
         location = scrape_location(driver, row['url'])
         row['location'] = location
         df = df.append(row)
