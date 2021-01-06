@@ -91,6 +91,8 @@ def scrape_location(driver, url, frame=None):
     flex_card = soup.find('div', 'flex-1 mr5')
     try:
         location = flex_card.find('li', 't-16 t-black t-normal inline-block')
+        if location == None:
+            return 'Information not provided.'
     except:
         return '404'
     location = location.text.lstrip().rstrip()
@@ -135,7 +137,7 @@ def main():
 
     driver = login()
 
-    for idx, row in frame[280:].iterrows():
+    for idx, row in frame[970:].iterrows():
         location = scrape_location(driver, row['url'])
         row['location'] = location
         df = df.append(row)
