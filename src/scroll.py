@@ -1,6 +1,7 @@
 from time import sleep
 import chromedriver_binary
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 def get_login():
     '''
@@ -40,10 +41,8 @@ def login():
     # session keys for LI instance
     email, pw = get_login()
     
-    # selenium webdriver
     driver = webdriver.Chrome()
     driver.get('https://www.linkedin.com/')
-    # log in
     sleep(2)
     driver.find_element_by_id('session_key').send_keys(email)
     sleep(1)
