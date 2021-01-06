@@ -119,7 +119,9 @@ def main():
     all_files = glob.glob(path + "/*.csv")
     csv_name = '../data/tech_rec/_techrecruiters_with_location.csv'
     lst = []
+    scroll.main()
     
+    #TODO: functionize
     for filename in all_files:
         df = pd.read_csv(filename, index_col=None, header=0, names=['recruiter', 'url'])
         co_name = filename
@@ -136,7 +138,7 @@ def main():
         df.to_csv(csv_name, index=False)
 
     driver = login()
-
+    #TODO: functionize
     for idx, row in frame[970:].iterrows():
         location = scrape_location(driver, row['url'])
         row['location'] = location
