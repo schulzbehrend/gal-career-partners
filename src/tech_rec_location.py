@@ -140,7 +140,7 @@ def main():
 
     driver = login()
     #TODO: functionize
-    for idx, row in frame[970:].iterrows():
+    for idx, row in frame[2202:3200].iterrows():
         location = scrape_location(driver, row['url'])
         row['location'] = location
         df = df.append(row)
